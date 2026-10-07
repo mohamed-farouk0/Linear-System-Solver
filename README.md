@@ -22,16 +22,113 @@ Before this loop starts, any rows that are entirely zero are moved to the bottom
 
 ```mermaid
 flowchart TD
-    A[Read matrix] --> B[Move zero rows down]
-    B --> C{Non-zero entry in this column,<br>at or below the pivot row?}
-    C -- No --> G{More columns?}
-    C -- Yes --> D[Swap it into the pivot row]
-    D --> E[Divide the pivot row by the pivot]
-    E --> F[Eliminate the entries below the pivot]
-    F --> H[Move to the next pivot row]
-    H --> G
-    G -- Yes --> C
-    G -- No --> I[Print result]
+    Start([start]) --> In[/"M, N"/]
+    In --> I1
+
+    subgraph INPUT["1. Matrix input"]
+        I1{"row #lt; M"}
+        I1 -- Yes --> I2{"column #lt; N"}
+        I2 -- Yes --> I3[/"matrix[row, column]"/]
+        I3 -- "column++" --> I2
+        I2 -- "No, row++" --> I1
+    end
+
+    I1 -- No --> OUT0[["output(M, N, matrix)"]]
+    OUT0 --> Z0
+
+    subgraph ZERO["2. Zero-row handling"]
+        Z0["bool isZeroRow = true<br/>int topRow = 0<br/>int bottomRow = M - 1"] --> Z1{"topRow #lt; M"}
+        Z1 -- Yes --> Z2{"topRow #gt;= bottomRow"}
+        Z2 -- Yes --> ZB["break"]
+        Z2 -- No --> Z3["isZeroRow = true"]
+        Z3 -- "column = 0" --> Z4{"column #lt; N"}
+        Z4 -- Yes --> Z5{"matrix[topRow, column] != 0"}
+        Z5 -- Yes --> Z6["isZeroRow = false<br/>break"]
+        Z5 -- "No, column++" --> Z4
+        Z6 --> Z7
+        Z4 -- No --> Z7{"isZeroRow == true"}
+        Z7 -- "No, topRow++" --> Z1
+        Z7 -- "Yes, bottomRow = M - 1" --> Z8{"bottomRow #gt; topRow"}
+        Z8 -- Yes --> Z9["isZeroRow = true"]
+        Z9 -- "column = 0" --> Z10{"column #lt; N"}
+        Z10 -- Yes --> Z11{"matrix[bottomRow, column] != 0"}
+        Z11 -- Yes --> Z12["isZeroRow = false<br/>break"]
+        Z11 -- "No, column++" --> Z10
+        Z10 -- "No, bottomRow--" --> Z8
+        Z12 --> Z13{"isZeroRow == false"}
+        Z8 -- No --> Z1
+        Z13 -- Yes --> Z14["double tmp = 0"]
+        Z14 -- "column = 0" --> Z15{"column #lt; N"}
+        Z15 -- Yes --> Z16["swap matrix[topRow, column]<br/>with matrix[bottomRow, column]"]
+        Z16 -- "column++" --> Z15
+        Z15 -- No --> Z17[["output(M, N, matrix)"]]
+        Z17 --> Z18["topRow++"]
+        Z18 --> Z1
+        Z13 -- No --> Z1
+    end
+
+    Z1 -- No --> P0
+    ZB --> P0
+
+    subgraph PIVOT["3. Pivot search and row swapping"]
+        P0["int pivotRow = 0"] -- "col = 0" --> P1{"col #lt; N and pivotRow #lt; M"}
+        P1 -- Yes --> P2["int found = -1"]
+        P2 -- "row = pivotRow" --> P3{"row #lt; M"}
+        P3 -- Yes --> P4{"matrix[row, col] != 0"}
+        P4 -- Yes --> P5["found = row<br/>break"]
+        P4 -- "No, row++" --> P3
+        P5 --> P6
+        P3 -- No --> P6{"found == -1"}
+        P6 -- Yes --> P7["continue"]
+        P7 -- "col++" --> P1
+        P6 -- No --> P8{"found != pivotRow"}
+        P8 -- Yes --> P9["double tmp = 0"]
+        P9 -- "column = 0" --> P10{"column #lt; N"}
+        P10 -- Yes --> P11["swap matrix[pivotRow, column]<br/>with matrix[found, column]"]
+        P11 -- "column++" --> P10
+        P10 -- No --> P12[["output(M, N, matrix)"]]
+    end
+
+    P1 -- No --> Stop([stop])
+    P8 -- No --> N0
+    P12 --> N0
+
+    subgraph NORM["4. Pivot normalization"]
+        N0{"matrix[pivotRow, col] != 1"}
+        N0 -- Yes --> N1["double pivot = matrix[pivotRow, col]"]
+        N1 -- "column = 0" --> N2{"column #lt; N"}
+        N2 -- Yes --> N3["matrix[pivotRow, column] /= pivot"]
+        N3 -- "column++" --> N2
+        N2 -- No --> N4[["output(M, N, matrix)"]]
+    end
+
+    N0 -- No --> E0
+    N4 --> E0
+
+    subgraph ELIM["5. Row elimination"]
+        E0["row = pivotRow + 1"] --> E1{"row #lt; M"}
+        E1 -- Yes --> E2{"matrix[row, col] != 0"}
+        E2 -- "No, row++" --> E1
+        E2 -- Yes --> E3["double c = matrix[row, col]"]
+        E3 -- "column = 0" --> E4{"column #lt; N"}
+        E4 -- Yes --> E5["matrix[row, column] -= c * matrix[pivotRow, column]"]
+        E5 -- "column++" --> E4
+        E4 -- No --> E6[["output(M, N, matrix)"]]
+        E6 -- "row++" --> E1
+        E1 -- No --> E7["pivotRow++"]
+    end
+
+    E7 -- "col++" --> P1
+
+    subgraph METHOD["output() method"]
+        direction TD
+        O0[["output(M, N, matrix)"]] --> O1{"row #lt; M"}
+        O1 -- Yes --> O2{"column #lt; N"}
+        O2 -- Yes --> O3[/"print matrix[row, column]"/]
+        O3 -- "column++" --> O2
+        O2 -- "No, row++" --> O1
+        O1 -- No --> OEnd([stop])
+    end
 ```
 
 The full editable flowchart is in [`docs/Linear-System-Solver-Flowchart.drawio`](docs/Linear-System-Solver-Flowchart.drawio) and can be opened with [diagrams.net](https://app.diagrams.net).
