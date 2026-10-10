@@ -109,15 +109,56 @@ for (int row = 0; row < M; row++)
 A row of all zeros can never provide a pivot, so it is moved to the bottom. `topRow` walks down from the first row and `bottomRow` walks up from the last. When `topRow` is a zero row, it is swapped with the nearest non-zero row found from the bottom.
 
 ```csharp
-bool isZeroRow = true;
-for (int column = 0; column < N; column++)
-{
-    if (matrix[topRow, column] != 0)
-    {
-        isZeroRow = false;
-        break;   // one non-zero entry is enough
-    }
-}
+            bool isZeroRow = true;
+            int topRow = 0;
+            int bottomRow = M - 1;
+            for (topRow = 0; topRow < M; topRow++)
+            {
+                if( topRow >= bottomRow )
+                {
+                    break;
+                }
+
+                isZeroRow = true;
+                for (int column = 0; column < N; column++)
+                {
+                    if (matrix[topRow, column] != 0)
+                    {
+                        isZeroRow = false;
+                        break;
+                    }
+                }
+                if (isZeroRow == true)
+                {
+
+                    for (bottomRow = M - 1; bottomRow > topRow; bottomRow--)
+                    {
+                        isZeroRow = true;
+                        for (int column = 0; column < N; column++)
+                        {
+                            if (matrix[bottomRow, column] != 0)
+                            {
+                                isZeroRow = false;
+                                break;
+                            }
+                        }
+
+                        if (isZeroRow == false)
+                        {
+                            double tmp = 0;
+                            for (int column = 0; column < N; column++)
+                            {
+                                tmp = matrix[topRow, column];
+                                matrix[topRow, column] = matrix[bottomRow, column];
+                                matrix[bottomRow, column] = tmp;
+                            }
+                            Console.WriteLine($"Row {topRow + 1} swapped with Row {bottomRow + 1}");
+                            output(M, N, matrix);
+                            topRow++;
+                        }
+                    }
+                }
+            }
 ```
 
 ```text
