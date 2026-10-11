@@ -1,0 +1,14 @@
+C:\Users\WG\source\repos\matrix\bin\Debug\net9.0\matrix.exe
+C:\Users\WG\source\repos\matrix\bin\Debug\net9.0\matrix.deps.json
+C:\Users\WG\source\repos\matrix\bin\Debug\net9.0\matrix.runtimeconfig.json
+C:\Users\WG\source\repos\matrix\bin\Debug\net9.0\matrix.dll
+C:\Users\WG\source\repos\matrix\bin\Debug\net9.0\matrix.pdb
+C:\Users\WG\source\repos\matrix\obj\Debug\net9.0\matrix.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\WG\source\repos\matrix\obj\Debug\net9.0\matrix.AssemblyInfoInputs.cache
+C:\Users\WG\source\repos\matrix\obj\Debug\net9.0\matrix.AssemblyInfo.cs
+C:\Users\WG\source\repos\matrix\obj\Debug\net9.0\matrix.csproj.CoreCompileInputs.cache
+C:\Users\WG\source\repos\matrix\obj\Debug\net9.0\matrix.dll
+C:\Users\WG\source\repos\matrix\obj\Debug\net9.0\refint\matrix.dll
+C:\Users\WG\source\repos\matrix\obj\Debug\net9.0\matrix.pdb
+C:\Users\WG\source\repos\matrix\obj\Debug\net9.0\matrix.genruntimeconfig.cache
+C:\Users\WG\source\repos\matrix\obj\Debug\net9.0\ref\matrix.dll
